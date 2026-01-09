@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/useAuth'
 import { useComments } from '@/hooks/useComments'
@@ -19,12 +19,14 @@ import Link from 'next/link'
 interface Post {
   id: number
   type: 'lost' | 'found'
+  user_id: string
   title: string
   description: string | null
   item_category: string | null
   location: string | null
   lost_found_date: string | null
   image_urls: string[] | null
+  status: 'open' | 'closed'
   created_at: string
   profiles: {
     nickname: string | null
@@ -101,6 +103,48 @@ export function PostDetailContent({ postId }: { postId: number }) {
     }
   }
 
+  const handleMarkAsFound = async () => {
+    if (!user || !post) return
+
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .update({ status: 'closed' })
+        .eq('id', postId)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      // 刷新帖子数据
+      await fetchPost()
+      alert('已标记为已找到')
+    } catch (err) {
+      console.error('Error updating post status:', err)
+      alert('标记失败')
+    }
+  }
+
+  const handleReopenPost = async () => {
+    if (!user || !post) return
+
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .update({ status: 'open' })
+        .eq('id', postId)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      // 刷新帖子数据
+      await fetchPost()
+      alert('已重新打开帖子')
+    } catch (err) {
+      console.error('Error updating post status:', err)
+      alert('操作失败')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -142,6 +186,9 @@ export function PostDetailContent({ postId }: { postId: number }) {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <Avatar>
+                    {post.profiles?.avatar_url && (
+                      <AvatarImage src={post.profiles.avatar_url} />
+                    )}
                     <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
                       {post.profiles?.nickname?.charAt(0) || 'U'}
                     </AvatarFallback>
@@ -153,7 +200,15 @@ export function PostDetailContent({ postId }: { postId: number }) {
                     </p>
                   </div>
                 </div>
-                <CardTitle className="text-2xl mb-2">{post.title}</CardTitle>
+                <div className="flex items-center gap-3 mb-2">
+                  <CardTitle className="text-2xl">{post.title}</CardTitle>
+                  {post.status === 'closed' && (
+                    <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+                      <Check className="w-3 h-3 mr-1" />
+                      已找到
+                    </Badge>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
@@ -171,6 +226,27 @@ export function PostDetailContent({ postId }: { postId: number }) {
                   </div>
                 </div>
               </div>
+              {user && user.id === post.user_id && (
+                <div>
+                  {post.status === 'open' ? (
+                    <Button
+                      onClick={handleMarkAsFound}
+                      className="gap-2"
+                    >
+                      <Check className="w-4 h-4" />
+                      标记为已找到
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleReopenPost}
+                      variant="outline"
+                      className="gap-2"
+                    >
+                      重新打开
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           </CardHeader>
 
@@ -241,6 +317,9 @@ export function PostDetailContent({ postId }: { postId: number }) {
                 comments.map((comment) => (
                   <div key={comment.id} className="flex gap-3">
                     <Avatar>
+                      {!comment.is_anonymous && comment.profiles?.avatar_url && (
+                        <AvatarImage src={comment.profiles.avatar_url} />
+                      )}
                       <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
                         {comment.is_anonymous ? '匿' : comment.profiles?.nickname?.charAt(0) || 'U'}
                       </AvatarFallback>

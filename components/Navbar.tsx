@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useMessages } from '@/hooks/useMessages'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Search, Bell, LogOut, User, Home, Plus } from 'lucide-react'
 
@@ -66,11 +66,14 @@ export function Navbar() {
                   </Button>
                 </Link>
 
-                <Avatar className="cursor-pointer">
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-                    {profile?.nickname?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <Link href="/profile">
+                  <Avatar className="cursor-pointer">
+                    {profile?.avatar_url && <AvatarImage src={profile.avatar_url} />}
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                      {profile?.nickname?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
 
                 <Button variant="ghost" size="icon" onClick={handleLogout}>
                   <LogOut className="w-5 h-5" />

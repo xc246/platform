@@ -4,21 +4,18 @@ export type Database = {
       profiles: {
         Row: {
           id: string
-          student_id: string
           nickname: string | null
           avatar_url: string | null
           created_at: string
         }
         Insert: {
           id: string
-          student_id: string
           nickname?: string | null
           avatar_url?: string | null
           created_at?: string
         }
         Update: {
           id?: string
-          student_id?: string
           nickname?: string | null
           avatar_url?: string | null
           created_at?: string
@@ -96,5 +93,19 @@ export type Database = {
 }
 
 export type Profile = Database['public']['Tables']['profiles']['Row']
-export type Post = Database['public']['Tables']['posts']['Row']
-export type Comment = Database['public']['Tables']['comments']['Row']
+
+export type Post = Database['public']['Tables']['posts']['Row'] & {
+  profiles?: {
+    id: string
+    nickname: string | null
+    avatar_url: string | null
+  }
+}
+
+export type Comment = Database['public']['Tables']['comments']['Row'] & {
+  profiles?: {
+    id: string
+    nickname: string | null
+    avatar_url: string | null
+  }
+}

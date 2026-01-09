@@ -22,7 +22,7 @@ export function useComments(postId: number) {
         .from('comments')
         .select(`
           *,
-          profiles:profiles(id, nickname)
+          profiles:profiles(id, nickname, avatar_url)
         `)
         .eq('post_id', postId)
         .order('created_at', { ascending: true })

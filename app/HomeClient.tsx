@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Search, MapPin, Calendar, User, Filter } from 'lucide-react'
 import { ITEM_CATEGORIES, COMMON_LOCATIONS, ITEM_CATEGORIES_MAP } from '@/lib/constants'
 import Link from 'next/link'
@@ -125,21 +126,28 @@ export default function HomeClient() {
                   href={`/post/${post.id}`}
                   className="group"
                 >
-                  <Card className="h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-300 overflow-hidden">
+                  <Card className={`h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-300 overflow-hidden ${post.status === 'closed' ? 'opacity-70' : ''}`}>
                     {post.image_urls && post.image_urls.length > 0 && (
                       <div className="relative h-48 w-full bg-gray-100">
                         <Image
                           src={post.image_urls[0]}
                           alt={post.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className={`object-cover group-hover:scale-105 transition-transform duration-300 ${post.status === 'closed' ? 'grayscale' : ''}`}
                         />
-                        <Badge
-                          variant={post.type === 'lost' ? 'lost' : 'found'}
-                          className="absolute top-3 right-3"
-                        >
-                          {post.type === 'lost' ? '失物' : '招领'}
-                        </Badge>
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          <Badge
+                            variant={post.type === 'lost' ? 'lost' : 'found'}
+                          >
+                            {post.type === 'lost' ? '失物' : '招领'}
+                          </Badge>
+                          {post.status === 'closed' && (
+                            <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+                              <Check className="w-3 h-3 mr-1" />
+                              已找到
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     )}
                     <CardHeader>
@@ -150,6 +158,19 @@ export default function HomeClient() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
+                      <div className="flex items-center gap-2 mb-3 pb-3 border-b">
+                        <Avatar className="w-8 h-8">
+                          {post.profiles?.avatar_url && (
+                            <AvatarImage src={post.profiles.avatar_url} />
+                          )}
+                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-sm">
+                            {post.profiles?.nickname?.charAt(0) || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-sm text-muted-foreground">
+                          {post.profiles?.nickname || '匿名用户'}
+                        </span>
+                      </div>
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="w-4 h-4" />
