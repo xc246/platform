@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { usePosts } from '@/hooks/usePosts'
-import { Navbar } from '@/components/Navbar'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
