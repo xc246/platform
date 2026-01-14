@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true, // 忽略ESLint错误
-  },
+  }
 },
 };
 
