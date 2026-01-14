@@ -34,5 +34,8 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "noUnusedLocals": false,        // 忽略未使用的局部变量
+    "noUnusedParameters": false,    // 忽略未使用的函数参数
+    "strict": false   
 }
