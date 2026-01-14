@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Search, MapPin, Calendar, User, Filter } from 'lucide-react'
+import { Search, MapPin, Calendar, Filter } from 'lucide-react'
 import { ITEM_CATEGORIES, COMMON_LOCATIONS, ITEM_CATEGORIES_MAP } from '@/lib/constants'
 import Link from 'next/link'
 import Image from 'next/image'
