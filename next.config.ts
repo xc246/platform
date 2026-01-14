@@ -1,13 +1,16 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('https://', '').replace('http://', ''),
-        port: "",
-        pathname: "/storage/v1/object/**",
+        protocol: 'https',
+        hostname: process.env.NEXT_PUBLIC_SUPABASE_URL
+          ?.replace('https://', '')
+          ?.replace('http://', '')
+          ?.split('.')[0],
+        port: '',
+        pathname: '/storage/v1/object/**',
       },
     ],
     formats: ['image/avif', 'image/webp'],
@@ -17,12 +20,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   typescript: {
-    ignoreBuildErrors: true,  // 强制忽略TypeScript构建错误
+    ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true, // 忽略ESLint错误
-  }
+    ignoreDuringBuilds: true,
+  },
 }
-};
 
-export default nextConfig;
+export default nextConfig
